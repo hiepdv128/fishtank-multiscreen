@@ -6,20 +6,24 @@ import mover.Mover;
 /**
  * Created by hiepdv on 11/12/2016.
  */
-public class Fish implements Runnable {
+public class Fish {
 
-    private int id;
+    private String id;
     private int deviceId;
-    private int xPosition;
-    private int yPosition;
     private ImageView imageFish;
     private Mover mover;
 
-    public int getId() {
+    public Fish(ImageView imageFish, Mover mover) {
+        this.id = String.valueOf(System.currentTimeMillis());
+        this.imageFish = imageFish;
+        this.mover = mover;
+    }
+
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -29,22 +33,6 @@ public class Fish implements Runnable {
 
     public void setDeviceId(int deviceId) {
         this.deviceId = deviceId;
-    }
-
-    public int getxPosition() {
-        return xPosition;
-    }
-
-    public void setxPosition(int xPosition) {
-        this.xPosition = xPosition;
-    }
-
-    public int getyPosition() {
-        return yPosition;
-    }
-
-    public void setyPosition(int yPosition) {
-        this.yPosition = yPosition;
     }
 
     public ImageView getImageFish() {
@@ -63,11 +51,7 @@ public class Fish implements Runnable {
         this.mover = mover;
     }
 
-    @Override
-    public void run() {
-        while (true) {
-            mover.move(imageFish);
-
-        }
+    public void swim() {
+        mover.move(imageFish);
     }
 }

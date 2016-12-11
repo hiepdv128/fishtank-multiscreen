@@ -1,71 +1,62 @@
 package control;
 
-import javafx.animation.Animation;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Point3D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Screen;
-import javafx.util.Duration;
+import javafx.stage.Stage;
+import model.Fish;
+import mover.Linear;
 
-import java.awt.*;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
 
-    private static final int COLUMNS  =   4;
-    private static final int COUNT    =  10;
-    private static final int OFFSET_X =  100;
-    private static final int OFFSET_Y =  200;
-    private static final int WIDTH    = 374;
-    private static final int HEIGHT   = 243;
     @FXML
     private Pane pnRoot;
-    @FXML
-    private ImageView img;
+
+    private List<Fish> fishs = new ArrayList<>();
+
+    private Random random;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         this.setUpBackground();
+        this.random = new Random();
+        new Thread(new FishRunner(fishs)).start();
     }
 
     public void setUpBackground() {
         Image image = new Image(getClass().getClassLoader().getResource("background.jpg").toExternalForm());
         BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
         pnRoot.setBackground(new Background(backgroundImage));
-      img = new ImageView(new Image("fish2.gif"));
-        //img.setViewport(new Rectangle2D(OFFSET_X, OFFSET_Y, WIDTH, HEIGHT));
+    }
 
-        img.relocate(10, 10);
-        pnRoot.getChildren().addAll(img);
-//        final Animation animation = new SpriteAnimation(
-//                img,
-//                Duration.millis(400.0),
-//                COUNT, COLUMNS,
-//                OFFSET_X, OFFSET_Y,
-//                WIDTH, HEIGHT
-//        );
-//
-//        animation.setCycleCount(Animation.INDEFINITE);
-//        animation.play();
-        Thread a = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                for (int i = 0; i <1366; i++) {
-                    try {
-                        Thread.sleep(10);
-                        img.relocate(i, 10);
-                        if(i==1365) i=0;
+    @FXML
+    public void handleClose(ActionEvent event) {
+        Stage stage = (Stage) pnRoot.getScene().getWindow();
+        stage.close();
+    }
 
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+    @FXML
+    public void handleAddFish(ActionEvent event) {
+        Rectangle2D screen = Screen.getPrimary().getVisualBounds();
 
-                }
-            }
-        });
-        a.start();
+        ImageView fishImage = new ImageView(new Image("fish-1.gif"));
+        fishImage.setRotationAxis(new Point3D(0, 1, 0));
+        fishImage.relocate(random.nextInt((int)screen.getWidth()), random.nextInt((int)screen.getHeight()));
+
+        Fish newFish = new Fish(fishImage, new Linear());
+        pnRoot.getChildren().add(fishImage);
+        fishs.add(newFish);
     }
 }
