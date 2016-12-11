@@ -1,5 +1,8 @@
 package model;
 
+import javafx.scene.image.ImageView;
+import mover.Mover;
+
 /**
  * Created by hiepdv on 11/12/2016.
  */
@@ -9,7 +12,8 @@ public class Fish implements Runnable {
     private int deviceId;
     private int xPosition;
     private int yPosition;
-    private Type type;
+    private ImageView imageFish;
+    private Mover mover;
 
     public int getId() {
         return id;
@@ -43,17 +47,27 @@ public class Fish implements Runnable {
         this.yPosition = yPosition;
     }
 
-    public Type getType() {
-        return type;
+    public ImageView getImageFish() {
+        return imageFish;
     }
 
-    public void setType(Type type) {
-        this.type = type;
+    public void setImageFish(ImageView imageFish) {
+        this.imageFish = imageFish;
+    }
+
+    public Mover getMover() {
+        return mover;
+    }
+
+    public void setMover(Mover mover) {
+        this.mover = mover;
     }
 
     @Override
     public void run() {
+        while (true) {
+            mover.move(imageFish);
 
-
+        }
     }
 }
