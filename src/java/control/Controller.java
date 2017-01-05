@@ -32,7 +32,6 @@ public class Controller implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         this.setUpBackground();
         this.random = new Random();
-        new Thread(new FishRunner(fishs)).start();
     }
 
     public void setUpBackground() {
@@ -56,6 +55,7 @@ public class Controller implements Initializable {
         fishImage.relocate(random.nextInt((int)screen.getWidth()), random.nextInt((int)screen.getHeight()));
 
         Fish newFish = new Fish(fishImage, new Linear());
+        newFish.start();
         pnRoot.getChildren().add(fishImage);
         fishs.add(newFish);
     }

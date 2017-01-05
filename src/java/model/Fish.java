@@ -1,12 +1,13 @@
 package model;
 
+import javafx.animation.AnimationTimer;
 import javafx.scene.image.ImageView;
 import mover.Mover;
 
 /**
  * Created by hiepdv on 11/12/2016.
  */
-public class Fish {
+public class Fish extends AnimationTimer {
 
     private String id;
     private int deviceId;
@@ -51,7 +52,9 @@ public class Fish {
         this.mover = mover;
     }
 
-    public void swim() {
+    @Override
+    public void handle(long l) {
         mover.move(imageFish);
+
     }
 }
