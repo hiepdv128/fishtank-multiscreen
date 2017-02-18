@@ -7,5 +7,5 @@ import javafx.scene.image.ImageView;
  */
 public interface Mover {
 
-    void move(ImageView imageView);
+    void move(ImageView imageView,String imageSource);
 }

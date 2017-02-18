@@ -1,23 +1,32 @@
 package model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import javafx.animation.AnimationTimer;
 import javafx.scene.image.ImageView;
 import mover.Mover;
 
+import java.io.Serializable;
+
 /**
  * Created by hiepdv on 11/12/2016.
  */
-public class Fish extends AnimationTimer {
+public class Fish extends AnimationTimer implements Serializable{
 
     private String id;
     private int deviceId;
-    private ImageView imageFish;
+    private String imageSource;
     private Mover mover;
 
-    public Fish(ImageView imageFish, Mover mover) {
+    @JsonIgnore
+    private ImageView imageFish;
+
+    private static final long serializableUID =1L;
+    private static final long serialVersionUID = 1L;
+    public Fish(ImageView imageFish, Mover mover,String imageSource) {
         this.id = String.valueOf(System.currentTimeMillis());
         this.imageFish = imageFish;
         this.mover = mover;
+        this.imageSource = imageSource;
     }
 
     public String getId() {
@@ -54,7 +63,7 @@ public class Fish extends AnimationTimer {
 
     @Override
     public void handle(long l) {
-        mover.move(imageFish);
+        mover.move(imageFish,imageSource);
 
     }
 }

@@ -4,6 +4,7 @@ import javafx.geometry.Bounds;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.image.ImageView;
 import javafx.stage.Screen;
+import server.SocketServer;
 
 import java.util.Random;
 
@@ -18,15 +19,24 @@ public class Linear implements Mover {
     private double xAdd = 1;
     private Random random;
 
+    private SocketServer socketServer;
+
     public Linear() {
         Rectangle2D screen = Screen.getPrimary().getVisualBounds();
+
+        socketServer = new SocketServer();
+        //Change to 800x600
+//        this.maxHeight = Constants.HEIGHT_SCREEN;
+//        this.maxWidth =Constants.WIDTH_SCREEN;
+
+
         this.maxHeight = screen.getHeight();
         this.maxWidth = screen.getWidth();
         random = new Random();
     }
 
     @Override
-    public void move(ImageView imageFish) {
+    public void move(ImageView imageFish,String imageSource) {
         Bounds imageBounds = imageFish.localToScreen(imageFish.getBoundsInLocal());
 
         if (imageBounds.getMaxY() > maxHeight || imageBounds.getMinY() < 0) {
@@ -50,5 +60,6 @@ public class Linear implements Mover {
 
         imageFish.setX(xNext);
         imageFish.setY(yNext);
+        socketServer.pushXYFish(imageFish,imageSource);
     }
 }
