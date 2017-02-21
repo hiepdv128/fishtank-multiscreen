@@ -1,9 +1,13 @@
 package model;
 
 import javafx.animation.AnimationTimer;
+import javafx.geometry.Point3D;
 import mover.Mover;
 import org.bson.types.ObjectId;
 import server.DeviceConnection;
+import utils.Constants;
+
+import java.util.Random;
 
 /**
  * Created by hiepdv on 11/12/2016.
@@ -19,7 +23,10 @@ public class Fish extends AnimationTimer {
         this.id = ObjectId.get().toHexString();
         this.mover = mover;
         this.image = new FishImage(imageSource);
+        this.image.setRotationAxis(new Point3D(0, 1, 0));
 
+        Random random = new Random();
+        this.image.relocate(random.nextInt(Constants.WIDTH_SCREEN), random.nextInt(Constants.HEIGHT_SCREEN));
         this.connection = connection;
     }
 

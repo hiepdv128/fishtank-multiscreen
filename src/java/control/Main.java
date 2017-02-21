@@ -13,7 +13,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/layout.fxml"));
         primaryStage.setTitle("Fish tank server");
         Rectangle2D screen = Screen.getPrimary().getVisualBounds();
 
