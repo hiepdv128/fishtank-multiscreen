@@ -1,9 +1,9 @@
 package mover;
 
 import javafx.geometry.Bounds;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.image.ImageView;
 import javafx.stage.Screen;
+import server.DeviceConnection;
 import server.SocketServer;
 
 import java.util.Random;
@@ -13,37 +13,32 @@ import java.util.Random;
  */
 public class Linear implements Mover {
 
-    private double maxWidth;
-    private double maxHeight;
+    private static double MAX_WIDTH = Screen.getPrimary().getVisualBounds().getWidth();
+    private static double MAX_HEIGHT = Screen.getPrimary().getVisualBounds().getHeight();
+
     private double yAdd = 1;
     private double xAdd = 1;
+
     private Random random;
 
-    private SocketServer socketServer;
-
     public Linear() {
-        Rectangle2D screen = Screen.getPrimary().getVisualBounds();
-
-        socketServer = new SocketServer();
-        //Change to 800x600
-//        this.maxHeight = Constants.HEIGHT_SCREEN;
-//        this.maxWidth =Constants.WIDTH_SCREEN;
-
-
-        this.maxHeight = screen.getHeight();
-        this.maxWidth = screen.getWidth();
-        random = new Random();
+        this.random = new Random();
     }
 
     @Override
-    public void move(ImageView imageFish,String imageSource) {
+    public void move(ImageView imageFish, DeviceConnection deviceConnection) {
+
+    }
+
+    public void moveWithClientScreen(ImageView imageFish, DeviceConnection deviceConnection) {
         Bounds imageBounds = imageFish.localToScreen(imageFish.getBoundsInLocal());
 
-        if (imageBounds.getMaxY() > maxHeight || imageBounds.getMinY() < 0) {
+        if ((imageBounds.getMinY() < 0 || imageBounds.getMaxY() > MAX_HEIGHT
+                || (imageBounds.getMaxX() >= MAX_WIDTH) && imageBounds.getMaxY() >= MAX_HEIGHT)) {
             yAdd = -yAdd;
         }
 
-        if (imageBounds.getMaxX() > maxWidth || imageBounds.getMinX() < 0) {
+        if (imageBounds.getMaxX() > MAX_HEIGHT || imageBounds.getMinX() < 0) {
             xAdd = -xAdd;
         }
 
@@ -60,6 +55,47 @@ public class Linear implements Mover {
 
         imageFish.setX(xNext);
         imageFish.setY(yNext);
-        socketServer.pushXYFish(imageFish,imageSource);
+    }
+
+    public void moveInRootScreen(ImageView imageFish) {
+        Bounds imageBounds = imageFish.localToScreen(imageFish.getBoundsInLocal());
+
+        if (imageBounds.getMaxY() > MAX_HEIGHT || imageBounds.getMinY() < 0) {
+            yAdd = -yAdd;
+        }
+
+        if (imageBounds.getMaxX() > MAX_HEIGHT || imageBounds.getMinX() < 0) {
+            xAdd = -xAdd;
+        }
+
+        if (xAdd < 0) {
+            imageFish.setRotate(0);
+        }
+
+        if (xAdd > 0) {
+            imageFish.setRotate(180);
+        }
+
+        double yNext = imageFish.getY() + yAdd * (1 + random.nextInt(1));
+        double xNext = imageFish.getX() + xAdd * (1 + random.nextInt(2));
+
+        imageFish.setX(xNext);
+        imageFish.setY(yNext);
+    }
+
+
+
+    public void verifyDeviceConnection(DeviceConnection connection) {
+        if (connection == null
+                || connection.getClientScreenHeight() == null
+                || connection.getClientScreenWidth() == null
+                || connection.getClientScreenWidth() < ) {
+            return;
+        }
+
+
+
+        MAX_WIDTH += connection.getClientScreenWidth();
+        MAX_HEIGHT += connection.getClientScreenHeight();
     }
 }

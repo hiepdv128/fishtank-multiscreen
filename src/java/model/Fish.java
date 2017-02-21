@@ -2,31 +2,31 @@ package model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import javafx.animation.AnimationTimer;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import mover.Mover;
+import org.bson.types.ObjectId;
+import server.DeviceConnection;
 
 import java.io.Serializable;
+import java.net.Socket;
 
 /**
  * Created by hiepdv on 11/12/2016.
  */
-public class Fish extends AnimationTimer implements Serializable{
+public class Fish extends AnimationTimer {
 
     private String id;
-    private int deviceId;
-    private String imageSource;
+    private FishImage image;
     private Mover mover;
+    private DeviceConnection connection;
 
-    @JsonIgnore
-    private ImageView imageFish;
-
-    private static final long serializableUID =1L;
-    private static final long serialVersionUID = 1L;
-    public Fish(ImageView imageFish, Mover mover,String imageSource) {
-        this.id = String.valueOf(System.currentTimeMillis());
-        this.imageFish = imageFish;
+    public Fish(DeviceConnection connection, Mover mover, String imageSource) {
+        this.id = ObjectId.get().toHexString();
         this.mover = mover;
-        this.imageSource = imageSource;
+        this.image = new FishImage(imageSource);
+
+        this.connection = connection;
     }
 
     public String getId() {
@@ -37,20 +37,12 @@ public class Fish extends AnimationTimer implements Serializable{
         this.id = id;
     }
 
-    public int getDeviceId() {
-        return deviceId;
+    public FishImage getImage() {
+        return image;
     }
 
-    public void setDeviceId(int deviceId) {
-        this.deviceId = deviceId;
-    }
-
-    public ImageView getImageFish() {
-        return imageFish;
-    }
-
-    public void setImageFish(ImageView imageFish) {
-        this.imageFish = imageFish;
+    public void setImage(FishImage image) {
+        this.image = image;
     }
 
     public Mover getMover() {
@@ -61,9 +53,17 @@ public class Fish extends AnimationTimer implements Serializable{
         this.mover = mover;
     }
 
+    public DeviceConnection getConnection() {
+        return connection;
+    }
+
+    public void setConnection(DeviceConnection connection) {
+        this.connection = connection;
+    }
+
     @Override
     public void handle(long l) {
-        mover.move(imageFish,imageSource);
-
+        mover.move(imageFish);
+        imageFish.getImage().
     }
 }

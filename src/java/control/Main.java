@@ -7,7 +7,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import server.SocketServer;
 import utils.Constants;
 
 public class Main extends Application {
@@ -21,8 +20,6 @@ public class Main extends Application {
         primaryStage.setScene(new Scene(root, Constants.WIDTH_SCREEN, screen.getHeight()));
         primaryStage.show();
         primaryStage.setFullScreen(true);
-        SocketServer server = new SocketServer();
-        server.acceptSocket();
     }
 
     public static void main(String[] args) {

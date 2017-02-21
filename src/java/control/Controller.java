@@ -24,7 +24,7 @@ import java.util.ResourceBundle;
 public class Controller implements Initializable {
 
     @FXML
- private    Pane pnRoot;
+    private Pane pnRoot;
 
     private List<Fish> fishs = new ArrayList<>();
 
@@ -58,25 +58,12 @@ public class Controller implements Initializable {
         ImageView fishImage = new ImageView(new Image("fish-2.gif"));
         fishImage.setRotationAxis(new Point3D(0, 1, 0));
         fishImage.relocate(random.nextInt((int) Constants.WIDTH_SCREEN), random.nextInt(Constants.HEIGHT_SCREEN));
-//        fishImage.relocate(screen.getWidth()/2, screen.getHeight()/2);
+//        fishImage.relocate(screen.getClientScreenWidth()/2, screen.getClientScreenHeight()/2);
 
-        Fish newFish = new Fish(fishImage, new Linear(),"fish-2.gif");
+        Fish newFish = new Fish(fishImage, new Linear(), "fish-2.gif");
         newFish.start();
         pnRoot.getChildren().add(fishImage);
         fishs.add(newFish);
-
-
-
-//
-//        try {
-//            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("dialogFish.fxml"));
-//            Parent root1 = (Parent) fxmlLoader.load();
-//            Stage stage = new Stage();
-//            stage.setScene(new Scene(root1));
-//            stage.show();
-//        } catch(Exception e) {
-//            e.printStackTrace();
-//        }
     }
 
 }
