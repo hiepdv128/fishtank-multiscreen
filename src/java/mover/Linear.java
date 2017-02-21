@@ -4,7 +4,6 @@ import javafx.geometry.Bounds;
 import javafx.scene.image.ImageView;
 import javafx.stage.Screen;
 import server.DeviceConnection;
-import server.SocketServer;
 
 import java.util.Random;
 
@@ -27,18 +26,22 @@ public class Linear implements Mover {
 
     @Override
     public void move(ImageView imageFish, DeviceConnection deviceConnection) {
+        if (deviceConnection.getSocket() == null || !deviceConnection.getSocket().isConnected()) {
+            moveInRootScreen(imageFish);
+            return;
+        }
+        moveWithClientScreen(imageFish, deviceConnection);
 
     }
 
     public void moveWithClientScreen(ImageView imageFish, DeviceConnection deviceConnection) {
         Bounds imageBounds = imageFish.localToScreen(imageFish.getBoundsInLocal());
 
-        if ((imageBounds.getMinY() < 0 || imageBounds.getMaxY() > MAX_HEIGHT
-                || (imageBounds.getMaxX() >= MAX_WIDTH) && imageBounds.getMaxY() >= MAX_HEIGHT)) {
+        if (imageBounds.getMaxY() > MAX_HEIGHT || imageBounds.getMinY() < 0) {
             yAdd = -yAdd;
         }
 
-        if (imageBounds.getMaxX() > MAX_HEIGHT || imageBounds.getMinX() < 0) {
+        if (imageBounds.getMaxX() > MAX_WIDTH + deviceConnection.getClientScreenWidth() || imageBounds.getMinX() < 0) {
             xAdd = -xAdd;
         }
 
@@ -64,7 +67,7 @@ public class Linear implements Mover {
             yAdd = -yAdd;
         }
 
-        if (imageBounds.getMaxX() > MAX_HEIGHT || imageBounds.getMinX() < 0) {
+        if (imageBounds.getMaxX() > MAX_WIDTH || imageBounds.getMinX() < 0) {
             xAdd = -xAdd;
         }
 
@@ -84,18 +87,4 @@ public class Linear implements Mover {
     }
 
 
-
-    public void verifyDeviceConnection(DeviceConnection connection) {
-        if (connection == null
-                || connection.getClientScreenHeight() == null
-                || connection.getClientScreenWidth() == null
-                || connection.getClientScreenWidth() < ) {
-            return;
-        }
-
-
-
-        MAX_WIDTH += connection.getClientScreenWidth();
-        MAX_HEIGHT += connection.getClientScreenHeight();
-    }
 }
