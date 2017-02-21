@@ -1,15 +1,9 @@
 package model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import javafx.animation.AnimationTimer;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import mover.Mover;
 import org.bson.types.ObjectId;
 import server.DeviceConnection;
-
-import java.io.Serializable;
-import java.net.Socket;
 
 /**
  * Created by hiepdv on 11/12/2016.
@@ -63,7 +57,6 @@ public class Fish extends AnimationTimer {
 
     @Override
     public void handle(long l) {
-        mover.move(imageFish);
-        imageFish.getImage().
+        mover.move(image, connection);
     }
 }

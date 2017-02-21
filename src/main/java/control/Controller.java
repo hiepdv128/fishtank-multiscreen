@@ -12,8 +12,13 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import model.Fish;
 import mover.Linear;
+import org.bson.Document;
+import server.DeviceConnection;
 import utils.Constants;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.URL;
 import java.util.ArrayList;
@@ -32,17 +37,24 @@ public class Controller implements Initializable {
 
     private ServerSocket server;
 
+    private DeviceConnection deviceConnection;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        this.setUpBackground();
-        this.random = new Random();
-//        server =
-    }
-
-    public void setUpBackground() {
-        Image image = new Image(getClass().getClassLoader().getResource("background.jpg").toExternalForm());
+        Image image = new Image("background.jpg");
         BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
         pnRoot.setBackground(new Background(backgroundImage));
+
+        try {
+            this.random = new Random();
+            this.server = new ServerSocket(2509);
+            this.deviceConnection = new DeviceConnection();
+
+            this.deviceConnection.setSocket(server.accept());
+            this.setupOndeviceConnected(deviceConnection);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -55,15 +67,22 @@ public class Controller implements Initializable {
     public void handleAddFish(ActionEvent event) {
         Rectangle2D screen = Screen.getPrimary().getVisualBounds();
 
+        // Không ổn
         ImageView fishImage = new ImageView(new Image("fish-2.gif"));
         fishImage.setRotationAxis(new Point3D(0, 1, 0));
         fishImage.relocate(random.nextInt((int) Constants.WIDTH_SCREEN), random.nextInt(Constants.HEIGHT_SCREEN));
-//        fishImage.relocate(screen.getClientScreenWidth()/2, screen.getClientScreenHeight()/2);
 
-        Fish newFish = new Fish(fishImage, new Linear(), "fish-2.gif");
+        Fish newFish = new Fish(deviceConnection, new Linear(), "fish-2.gif");
         newFish.start();
-        pnRoot.getChildren().add(fishImage);
+        pnRoot.getChildren().add(newFish.getImage());
         fishs.add(newFish);
     }
 
+    public void setupOndeviceConnected(DeviceConnection deviceConnection) throws IOException {
+        BufferedReader inputStream = new BufferedReader(new InputStreamReader(deviceConnection.getSocket().getInputStream()));
+
+        Document deviceInfo = Document.parse(inputStream.readLine());
+        deviceConnection.setClientScreenHeight(deviceInfo.getInteger("height"));
+        deviceConnection.setClientScreenWidth(deviceInfo.getInteger("width"));
+    }
 }
