@@ -2,14 +2,14 @@ package control;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Rectangle2D;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 import model.Fish;
-import mover.Linear;
 import server.DeviceConnection;
 import server.ServerHandler;
 
@@ -59,13 +59,21 @@ public class Controller implements Initializable {
 
     @FXML
     public void handleAddFish(ActionEvent event) {
-        Rectangle2D screen = Screen.getPrimary().getVisualBounds();
+        try {
+            Parent layoutFish = FXMLLoader.load(getClass().getResource("/layout_fish.fxml"));
+            Stage stage = new Stage();
+            stage.setTitle("My New Stage Title");
+            stage.setScene(new Scene(layoutFish, 450, 450));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-
-        Fish newFish = new Fish(deviceConnection, new Linear(), "fish-2.gif");
-        newFish.start();
-        pnRoot.getChildren().add(newFish.getImage());
-        fishs.add(newFish);
+//        Rectangle2D screen = Screen.getPrimary().getVisualBounds();
+//        Fish newFish = new Fish(deviceConnection, new Linear(), "fish-2.gif");
+//        newFish.start();
+//        pnRoot.getChildren().add(newFish.getImage());
+//        fishs.add(newFish);
     }
 
 

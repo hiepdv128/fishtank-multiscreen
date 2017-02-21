@@ -10,8 +10,11 @@
             <menus>
                 <Menu mnemonicParsing="false" text="Menu">
                     <items>
-                        <MenuItem fx:id="menuAdd" mnemonicParsing="false" onAction="#handleAddFish" text="Add" />
+                        <MenuItem fx:id="menuAdd" mnemonicParsing="false" onAction="#handleAddFish" text="Add">
+                                
+                        </MenuItem>
                         <MenuItem fx:id="menuClose" mnemonicParsing="false" onAction="#handleClose" text="Close" />
+
                     </items>
                 </Menu>
             </menus>
