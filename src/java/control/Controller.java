@@ -1,15 +1,19 @@
 package control;
 
+import interfaces.Listener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import model.Fish;
+import mover.Linear;
 import server.DeviceConnection;
 import server.ServerHandler;
 
@@ -21,7 +25,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.ResourceBundle;
 
-public class Controller implements Initializable {
+public class Controller implements Initializable , Listener {
 
     @FXML
     private Pane pnRoot;
@@ -56,25 +60,37 @@ public class Controller implements Initializable {
         Stage stage = (Stage) pnRoot.getScene().getWindow();
         stage.close();
     }
-
+    @FXML
+    public void onClickFish1(ActionEvent event){
+        System.out.println("aaaa");
+    }
     @FXML
     public void handleAddFish(ActionEvent event) {
         try {
-            Parent layoutFish = FXMLLoader.load(getClass().getResource("/layout_fish.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/layout_fish.fxml"));
+            Parent layoutFish = fxmlLoader.load();
+            ControllerDialogFish dialogFish = fxmlLoader.<ControllerDialogFish>getController();
+            dialogFish.setListenerClickFish(Controller.this);
+
             Stage stage = new Stage();
             stage.setTitle("My New Stage Title");
-            stage.setScene(new Scene(layoutFish, 450, 450));
+            stage.setScene(new Scene(layoutFish, 800, 450));
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-//        Rectangle2D screen = Screen.getPrimary().getVisualBounds();
-//        Fish newFish = new Fish(deviceConnection, new Linear(), "fish-2.gif");
-//        newFish.start();
-//        pnRoot.getChildren().add(newFish.getImage());
-//        fishs.add(newFish);
+
+
     }
 
 
+    @Override
+    public void onClickFish(String resourceFish) {
+       Rectangle2D screen = Screen.getPrimary().getVisualBounds();
+        Fish newFish = new Fish(deviceConnection, new Linear(), resourceFish);
+        newFish.start();
+        pnRoot.getChildren().add(newFish.getImage());
+        fishs.add(newFish);
+    }
 }
