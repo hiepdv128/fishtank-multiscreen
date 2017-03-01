@@ -23,6 +23,7 @@ public class Fish extends AnimationTimer {
         this.id = ObjectId.get().toHexString();
         this.mover = mover;
         this.image = new FishImage(imageSource);
+        image.setId(this.id);
         this.image.setRotationAxis(new Point3D(0, 1, 0));
 
         Random random = new Random();

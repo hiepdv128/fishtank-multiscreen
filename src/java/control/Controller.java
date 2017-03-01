@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.ResourceBundle;
 
-public class Controller implements Initializable , Listener {
+public class Controller implements Initializable, Listener {
 
     @FXML
     private Pane pnRoot;
@@ -60,10 +60,12 @@ public class Controller implements Initializable , Listener {
         Stage stage = (Stage) pnRoot.getScene().getWindow();
         stage.close();
     }
+
     @FXML
-    public void onClickFish1(ActionEvent event){
+    public void onClickFish1(ActionEvent event) {
         System.out.println("aaaa");
     }
+
     @FXML
     public void handleAddFish(ActionEvent event) {
         try {
@@ -81,16 +83,35 @@ public class Controller implements Initializable , Listener {
         }
 
 
-
     }
 
 
     @Override
     public void onClickFish(String resourceFish) {
-       Rectangle2D screen = Screen.getPrimary().getVisualBounds();
+        Rectangle2D screen = Screen.getPrimary().getVisualBounds();
         Fish newFish = new Fish(deviceConnection, new Linear(), resourceFish);
         newFish.start();
         pnRoot.getChildren().add(newFish.getImage());
         fishs.add(newFish);
+    }
+
+    public void handleAddTank(ActionEvent event) {
+        Rectangle2D screen = Screen.getPrimary().getVisualBounds();
+//
+//        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/layout_client_tank.fxml"));
+//        Parent layoutClient = null;
+//        try {
+//            layoutClient = fxmlLoader.load();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        ControllerClientTank clientTank = fxmlLoader.<ControllerClientTank>getController();
+//        Stage stage = new Stage();
+//        stage.setTitle("Client Tank");
+//        stage.setScene(new Scene(layoutClient, Constants.WIDTH_SCREEN, screen.getHeight()));
+//        stage.show();
+
+
+
     }
 }

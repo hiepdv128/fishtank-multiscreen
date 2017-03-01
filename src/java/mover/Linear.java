@@ -3,8 +3,11 @@ package mover;
 import javafx.geometry.Bounds;
 import javafx.scene.image.ImageView;
 import javafx.stage.Screen;
+import org.bson.Document;
 import server.DeviceConnection;
 
+import java.io.IOException;
+import java.io.PrintStream;
 import java.util.Random;
 
 /**
@@ -13,6 +16,7 @@ import java.util.Random;
 public class Linear implements Mover {
 
     private static double MAX_WIDTH = Screen.getPrimary().getVisualBounds().getWidth();
+//    private static double MAX_WIDTH =800;
     private static double MAX_HEIGHT = Screen.getPrimary().getVisualBounds().getHeight();
 
     private double yAdd = 1;
@@ -30,6 +34,7 @@ public class Linear implements Mover {
             moveInRootScreen(imageFish);
             return;
         }
+
         moveWithClientScreen(imageFish, deviceConnection);
 
     }
@@ -41,7 +46,7 @@ public class Linear implements Mover {
             yAdd = -yAdd;
         }
 
-        if (imageBounds.getMaxX() > MAX_WIDTH + deviceConnection.getClientScreenWidth() || imageBounds.getMinX() < 0) {
+        if (imageBounds.getMaxX() >MAX_WIDTH + deviceConnection.getClientScreenWidth() || imageBounds.getMinX() < 0) {
             xAdd = -xAdd;
         }
 
@@ -58,6 +63,8 @@ public class Linear implements Mover {
 
         imageFish.setX(xNext);
         imageFish.setY(yNext);
+
+        pushXYFish(imageFish,deviceConnection);
     }
 
     public void moveInRootScreen(ImageView imageFish) {
@@ -84,7 +91,32 @@ public class Linear implements Mover {
 
         imageFish.setX(xNext);
         imageFish.setY(yNext);
+        System.out.println("push to client : " + xNext+"           "+yNext);
+
     }
 
+
+        public void pushXYFish(ImageView fish,DeviceConnection deviceConnection) {
+        if (deviceConnection.getSocket() != null && deviceConnection.getSocket().isConnected()) {
+            PrintStream pr = null;
+            try {
+                pr = new PrintStream(deviceConnection.getSocket().getOutputStream());
+                String jsonFish = getFishJson(fish).toJson();
+                pr.println(jsonFish);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public Document getFishJson(ImageView fish) {
+        String imageSource = fish.getImage().impl_getUrl();        //chua tim duoc cach get url tu image
+        return new Document()
+                .append("id", fish.getId())
+                .append("x", fish.getX())
+                .append("y", fish.getY())
+                .append("source", imageSource);
+
+    }
 
 }
