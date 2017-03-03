@@ -1,5 +1,8 @@
 package server;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.net.Socket;
 
 /**
@@ -10,16 +13,26 @@ public class DeviceConnection {
     private Socket socket;
     private Integer clientScreenWidth;
     private Integer clientScreenHeight;
+    private BufferedWriter writer;
 
     public DeviceConnection() {
+    }
+
+    public BufferedWriter getWriter() {
+        return writer;
+    }
+
+    public void setWriter(BufferedWriter writer) {
+        this.writer = writer;
     }
 
     public Socket getSocket() {
         return socket;
     }
 
-    public void setSocket(Socket socket) {
+    public void setSocket(Socket socket) throws IOException {
         this.socket = socket;
+        this.writer = new BufferedWriter(new OutputStreamWriter(this.socket.getOutputStream()));
     }
 
     public Integer getClientScreenWidth() {
@@ -44,10 +57,4 @@ public class DeviceConnection {
         this.clientScreenHeight = clientScreenHeight;
     }
 
-
-//
-//    public static void main(String[] a) {
-//        SocketServer server = new SocketServer();
-//        server.acceptSocket();
-//    }
 }

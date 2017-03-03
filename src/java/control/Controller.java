@@ -5,12 +5,10 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 import model.Fish;
 import mover.Linear;
@@ -22,7 +20,6 @@ import java.net.ServerSocket;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable, Listener {
@@ -32,23 +29,20 @@ public class Controller implements Initializable, Listener {
 
     private List<Fish> fishs = new ArrayList<>();
 
-    private Random random;
-
-    private ServerSocket server;
-
     private DeviceConnection deviceConnection;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        //=> Set up background
         Image image = new Image("background.jpg");
         BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
         pnRoot.setBackground(new Background(backgroundImage));
 
         try {
-            this.server = new ServerSocket(2509);
+            ServerSocket server = new ServerSocket(2509);
             this.deviceConnection = new DeviceConnection();
 
-            new ServerHandler(this.deviceConnection, this.server).start();
+            new ServerHandler(this.deviceConnection, server).start();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -59,11 +53,6 @@ public class Controller implements Initializable, Listener {
     public void handleClose(ActionEvent event) {
         Stage stage = (Stage) pnRoot.getScene().getWindow();
         stage.close();
-    }
-
-    @FXML
-    public void onClickFish1(ActionEvent event) {
-        System.out.println("aaaa");
     }
 
     @FXML
@@ -81,37 +70,15 @@ public class Controller implements Initializable, Listener {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
     }
 
 
     @Override
     public void onClickFish(String resourceFish) {
-        Rectangle2D screen = Screen.getPrimary().getVisualBounds();
         Fish newFish = new Fish(deviceConnection, new Linear(), resourceFish);
         newFish.start();
         pnRoot.getChildren().add(newFish.getImage());
         fishs.add(newFish);
     }
 
-    public void handleAddTank(ActionEvent event) {
-        Rectangle2D screen = Screen.getPrimary().getVisualBounds();
-//
-//        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/layout_client_tank.fxml"));
-//        Parent layoutClient = null;
-//        try {
-//            layoutClient = fxmlLoader.load();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        ControllerClientTank clientTank = fxmlLoader.<ControllerClientTank>getController();
-//        Stage stage = new Stage();
-//        stage.setTitle("Client Tank");
-//        stage.setScene(new Scene(layoutClient, Constants.WIDTH_SCREEN, screen.getHeight()));
-//        stage.show();
-
-
-
-    }
 }

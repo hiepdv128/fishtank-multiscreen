@@ -7,7 +7,6 @@ import org.bson.Document;
 import server.DeviceConnection;
 
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.Random;
 
 /**
@@ -16,16 +15,15 @@ import java.util.Random;
 public class Linear implements Mover {
 
     private static double MAX_WIDTH = Screen.getPrimary().getVisualBounds().getWidth();
-//    private static double MAX_WIDTH =800;
+    //    private static double MAX_WIDTH =800;
     private static double MAX_HEIGHT = Screen.getPrimary().getVisualBounds().getHeight();
 
-    private double yAdd = 1;
+    private double yAdd = 1.5;
     private double xAdd = 1;
 
-    private Random random;
+    private static Random random = new Random();
 
     public Linear() {
-        this.random = new Random();
     }
 
     @Override
@@ -39,14 +37,14 @@ public class Linear implements Mover {
 
     }
 
-    public void moveWithClientScreen(ImageView imageFish, DeviceConnection deviceConnection) {
+    private void moveWithClientScreen(ImageView imageFish, DeviceConnection deviceConnection) {
         Bounds imageBounds = imageFish.localToScreen(imageFish.getBoundsInLocal());
 
-        if (imageBounds.getMaxY() > MAX_HEIGHT || imageBounds.getMinY() < 0) {
+        if (imageBounds.getMaxY() >= MAX_HEIGHT || imageBounds.getMinY() <= 300) {
             yAdd = -yAdd;
         }
 
-        if (imageBounds.getMaxX() >MAX_WIDTH + deviceConnection.getClientScreenWidth() || imageBounds.getMinX() < 0) {
+        if (imageBounds.getMaxX() > MAX_WIDTH + deviceConnection.getClientScreenWidth() || imageBounds.getMinX() < 0) {
             xAdd = -xAdd;
         }
 
@@ -58,16 +56,16 @@ public class Linear implements Mover {
             imageFish.setRotate(180);
         }
 
-        double yNext = imageFish.getY() + yAdd * (1 + random.nextInt(1));
+        double yNext = imageFish.getY() + 1;
         double xNext = imageFish.getX() + xAdd * (1 + random.nextInt(2));
 
         imageFish.setX(xNext);
-        imageFish.setY(yNext);
+        //imageFish.setY(yNext);
 
-        pushXYFish(imageFish,deviceConnection);
+        pushXYFish(imageFish, deviceConnection);
     }
 
-    public void moveInRootScreen(ImageView imageFish) {
+    private void moveInRootScreen(ImageView imageFish) {
         Bounds imageBounds = imageFish.localToScreen(imageFish.getBoundsInLocal());
 
         if (imageBounds.getMaxY() > MAX_HEIGHT || imageBounds.getMinY() < 0) {
@@ -86,36 +84,39 @@ public class Linear implements Mover {
             imageFish.setRotate(180);
         }
 
-        double yNext = imageFish.getY() + yAdd * (1 + random.nextInt(1));
+        double yNext = imageFish.getY() + yAdd;
         double xNext = imageFish.getX() + xAdd * (1 + random.nextInt(2));
 
         imageFish.setX(xNext);
         imageFish.setY(yNext);
-        System.out.println("push to client : " + xNext+"           "+yNext);
-
+        //System.out.println("push to client : " + xNext+"           "+yNext);
     }
 
 
-        public void pushXYFish(ImageView fish,DeviceConnection deviceConnection) {
+    private void pushXYFish(ImageView fish, DeviceConnection deviceConnection) {
         if (deviceConnection.getSocket() != null && deviceConnection.getSocket().isConnected()) {
-            PrintStream pr = null;
             try {
-                pr = new PrintStream(deviceConnection.getSocket().getOutputStream());
                 String jsonFish = getFishJson(fish).toJson();
-                pr.println(jsonFish);
+
+                deviceConnection.getWriter().write(jsonFish);
+                deviceConnection.getWriter().newLine();
+                deviceConnection.getWriter().flush();
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    public Document getFishJson(ImageView fish) {
+    private Document getFishJson(ImageView fish) {
         String imageSource = fish.getImage().impl_getUrl();        //chua tim duoc cach get url tu image
+        System.out.println(fish.getY());
         return new Document()
                 .append("id", fish.getId())
-                .append("x", fish.getX())
+                .append("x", fish.getX() - MAX_WIDTH )
                 .append("y", fish.getY())
-                .append("source", imageSource);
+                .append("source", imageSource)
+                .append("rotation", xAdd < 0 ? 0 : 180);
 
     }
 
