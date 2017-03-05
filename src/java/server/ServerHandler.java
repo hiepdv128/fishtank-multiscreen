@@ -10,9 +10,10 @@ import java.net.ServerSocket;
 /**
  * Created by MyPC on 2/21/2017.
  */
-public class ServerHandler extends Thread {
-    DeviceConnection deviceConnection;
-    ServerSocket server;
+public class ServerHandler implements Runnable {
+
+    private DeviceConnection deviceConnection;
+    private ServerSocket server;
 
     public ServerHandler(DeviceConnection deviceConnection, ServerSocket server) {
         this.deviceConnection = deviceConnection;

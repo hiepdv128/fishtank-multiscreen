@@ -21,6 +21,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Controller implements Initializable, Listener {
 
@@ -42,8 +44,10 @@ public class Controller implements Initializable, Listener {
             ServerSocket server = new ServerSocket(2509);
             this.deviceConnection = new DeviceConnection();
 
-            new ServerHandler(this.deviceConnection, server).start();
+            new FishSender(this.fishs, this.deviceConnection).start();
 
+            ExecutorService threadPool = Executors.newFixedThreadPool(2);
+            threadPool.submit(new ServerHandler(this.deviceConnection, server));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -71,7 +75,6 @@ public class Controller implements Initializable, Listener {
             e.printStackTrace();
         }
     }
-
 
     @Override
     public void onClickFish(String resourceFish) {

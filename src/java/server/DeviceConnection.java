@@ -11,8 +11,8 @@ import java.net.Socket;
 public class DeviceConnection {
 
     private Socket socket;
-    private Integer clientScreenWidth;
-    private Integer clientScreenHeight;
+    private Integer clientScreenWidth = 0;
+    private Integer clientScreenHeight = 0;
     private BufferedWriter writer;
 
     public DeviceConnection() {
@@ -36,9 +36,6 @@ public class DeviceConnection {
     }
 
     public Integer getClientScreenWidth() {
-        if (clientScreenWidth == null) {
-            clientScreenWidth = 0;
-        }
         return clientScreenWidth;
     }
 
@@ -47,9 +44,6 @@ public class DeviceConnection {
     }
 
     public Integer getClientScreenHeight() {
-        if (clientScreenHeight == null) {
-            clientScreenHeight = 0;
-        }
         return clientScreenHeight;
     }
 

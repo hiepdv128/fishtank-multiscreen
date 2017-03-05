@@ -7,18 +7,18 @@ import javafx.scene.image.ImageView;
  */
 public class FishImage extends ImageView {
 
-    private String uri;
+    private String url;
 
-    public FishImage(String uri) {
-        super(uri);
-        this.uri = uri;
+    public FishImage(String url) {
+        super(url);
+        this.url = url;
     }
 
-    public String getUri() {
-        return uri;
+    public String getUrl() {
+        return url;
     }
 
-    public void setUri(String uri) {
-        this.uri = uri;
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

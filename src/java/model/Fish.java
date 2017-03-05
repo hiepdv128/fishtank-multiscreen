@@ -18,17 +18,26 @@ public class Fish extends AnimationTimer {
     private FishImage image;
     private Mover mover;
     private DeviceConnection connection;
+    private Double rotation;
 
     public Fish(DeviceConnection connection, Mover mover, String imageSource) {
         this.id = ObjectId.get().toHexString();
         this.mover = mover;
         this.image = new FishImage(imageSource);
-        image.setId(this.id);
         this.image.setRotationAxis(new Point3D(0, 1, 0));
 
         Random random = new Random();
         this.image.relocate(random.nextInt(Constants.WIDTH_SCREEN), random.nextInt(Constants.HEIGHT_SCREEN));
         this.connection = connection;
+        this.rotation = 0D;
+    }
+
+    public Double getRotation() {
+        return rotation;
+    }
+
+    public void setRotation(Double rotation) {
+        this.rotation = rotation;
     }
 
     public String getId() {
@@ -65,6 +74,6 @@ public class Fish extends AnimationTimer {
 
     @Override
     public void handle(long l) {
-        mover.move(image, connection);
+        mover.move(this);
     }
 }
